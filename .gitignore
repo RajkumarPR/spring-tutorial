@@ -100,7 +100,7 @@ classes/
 *.war
 *.ear
 *.db
-
+*.srpingBeans
 ######################
 # Windows
 ######################
@@ -156,3 +156,5 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
+HelloWorld/src/test/
+HelloWorld/target/

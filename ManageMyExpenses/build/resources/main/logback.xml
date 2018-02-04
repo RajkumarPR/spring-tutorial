@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--
+        CONSOLE APPENDER
+        ================
+    -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{50}.%M-%L - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--
+        BASIC LOG FILE APPENDER
+        =================
+    -->
+    <!--<appender name="LOGFILE" class="ch.qos.logback.core.FileAppender">
+        <file>logfile.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS}  %magenta([%thread]) %highlight(%-5level) %logger{50}.%M-%L - %msg%n</Pattern>
+        </encoder>
+    </appender> -->
+
+    <!-- To rollover only on the file size -->
+    <appender name="SAVE-TO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %-5level %logger{36}.%M-%L - %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>log_%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>3</maxIndex>
+        </rollingPolicy>
+
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>2MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <!--
+        ROOT LOGS
+        =================
+    -->
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SAVE-TO-FILE"/>
+    </root>
+
+    <!-- More proof can be found by adding logging to one of
+         the springframework packages and then moving onto one of the classes instead -->
+    <logger name="org.springframework.*" additivity="false" level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SAVE-TO-FILE"/>
+    </logger>
+
+    <!-- To fix this additivity="false" needs to be used. Not using additivity="false"
+         will cause the message to be printed out twice due to the root log appender and
+         the class level appender both writing to the log.
+         Even if the root level is ERROR by setting the class level to DEBUG it overwrites
+         it globally and will cause the root appender to also write to DEBUG
+         level for the MyServiceImpl class. -->
+    <logger name="com.expense.soft" additivity="false" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="SAVE-TO-FILE"/>
+    </logger>
+
+    <!--
+       FILE ROLLING APPENDER BASED ON DATE & TIME
+       =================
+   -->
+    <!--<appender name="SAVE-TO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <file>${LOG_PATH}/log.log</file>
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %-5level %logger{36}.%M-%L - %msg%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>$./archived/log_%d{dd-MM-yyyy}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap> totalSizeCap limits the maximum size of all archived log files, it requires the "maxHistory" property to be set with maxHistory taking precedence over totalSizeCap when removing archived files.
+        </rollingPolicy>
+    </appender> -->
+
+    <!-- SizeAndTimeBasedRollingPolicy takes parts of both the examples above allowing it to rollover on size and time. Note that it uses both the %d and %i notation for including the date and log number respectively in the file name. -->
+    <!--<appender name="SAVE-TO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>$./log.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %-5level %logger{36}.%M - %msg%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>$./log_%d{dd-MM-yyyy}_%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>-->
+
+
+</configuration>

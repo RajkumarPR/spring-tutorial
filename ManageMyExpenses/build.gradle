@@ -1,0 +1,98 @@
+group 'com.expense.soft'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.tomcat'
+/**
+ * The com.bmuschko.tomcat plugin helps you get started quickly.
+ * If you are OK if the preconfigured tasks, this is the preferrable option.
+ * Most plugin users will go with this option. To use the Tomcat plugin,
+ */
+
+// Java version we want use for dev/prod
+sourceCompatibility = 1.8
+
+// War file name
+war.baseName = 'spring-activemq-jms'
+
+// Web directory, this overrides the default value "webapp"
+// project.webAppDirName = 'webapp'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.4.2'
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+// Set source directory
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+    }
+}
+
+dependencies {
+
+    // Spring framework dependencies
+    compile group: 'org.springframework', name: 'spring-core', version: '4.3.12.RELEASE'
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.12.RELEASE'
+    compile group: 'org.springframework', name: 'spring-web', version: '4.3.12.RELEASE'
+    compile group: 'org.springframework', name: 'spring-webmvc', version: '4.3.12.RELEASE'
+    compile group: 'org.springframework', name: 'spring-jms', version: '4.3.12.RELEASE'
+
+    // Spring security framework dependencies
+    compile group: 'org.springframework.security', name: 'spring-security-core', version: '4.2.4.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-web', version: '4.2.4.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-config', version: '4.2.4.RELEASE'
+
+    //ActiveMQ dependency
+    compile group: 'org.apache.activemq', name: 'activemq-spring', version: '5.15.2'
+
+    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
+    //logback logging framework
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-access', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    // Junit test framework
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    def tomcatVersion = '8.5.16'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:8.5.2",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
+
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    providedCompile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+
+
+}
+tomcat {
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+
+// context where tomcat is deployed, by defautl localhost:8080/
+tomcatRun.contextPath = '/'
+tomcatRunWar.contextPath = '/'
+
+/**
+ *  Tasks
+ * =========
+ * tomcatRun	-	TomcatRun	Starts a Tomcat instance and deploys the exploded web application to it.
+ * tomcatRunWar	-	TomcatRunWar	Starts a Tomcat instance and deploys the WAR to it.
+ * tomcatStop	-	TomcatStop	Stops the Tomcat instance.
+ * tomcatJasper	-	TomcatJasper	Runs the JSP compiler and turns JSP pages into Java source using
+ */
